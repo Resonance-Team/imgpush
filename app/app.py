@@ -169,8 +169,10 @@ def upload_image():
 
     file = request.files["file"]
 
-    random_string = _get_random_filename()
-    tmp_filepath = os.path.join("/tmp/", random_string)
+    file_name = request.form.get("name")
+    if not file_name:
+        file_name = _get_random_filename()
+    tmp_filepath = os.path.join("/tmp/", file_name)
     file.save(tmp_filepath)
     output_type = settings.OUTPUT_TYPE or filetype.guess_extension(tmp_filepath)
     error = None
@@ -179,8 +181,6 @@ def upload_image():
     output_path = os.path.join(settings.IMAGES_DIR, output_filename)
 
     try:
-        if os.path.exists(output_path):
-            raise CollisionError
         with Image(filename=tmp_filepath) as img:
             img.strip()
             if output_type not in ["gif"]:
