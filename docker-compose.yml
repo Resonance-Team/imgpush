@@ -2,6 +2,8 @@ version: '3.5'
 services:
   imgpush:
     container_name: 'resonance-images'
+    image: 'resonance-images:latest'
+    build: .
     restart: always
     ports:
         - "5000:5000"
@@ -10,6 +12,8 @@ services:
       - ./app:/app
       - ./images:/images
       - ./cache:/cache
+      - /etc/letsencrypt/live/199.ip-51-178-18.eu/:/resonance/certs/live/199.ip-51-178-18.eu:ro
+      - /etc/letsencrypt/archive/199.ip-51-178-18.eu/:/resonance/certs/archive/199.ip-51-178-18.eu:ro
     healthcheck:
       start_period: 0s
       test: ['CMD-SHELL', 'curl localhost:5000/liveness -s -f -o /dev/null || exit 1']
